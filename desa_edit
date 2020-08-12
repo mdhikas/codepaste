@@ -1,0 +1,147 @@
+<!DOCTYPE HTML>
+<html>
+<?php include 'head.php'; ?>
+
+<body class="sticky-header left-side-collapsed" onload="initMap()">
+    <section>
+        <?php include 'menu.php'; ?>
+
+        <!-- main content start-->
+        <div class="main-content">
+            <!-- header-starts -->
+            <div class="header-section">
+
+                <!--toggle button start-->
+                <a class="toggle-btn  menu-collapsed"><i class="fa fa-bars"></i></a>
+                <!--toggle button end-->
+
+                <!--notification menu start -->
+                <div class="menu-right">
+                    <div class="user-panel-top">
+                        <div class="profile_details_left">
+                        </div>
+                        <div class="profile_details">
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <!--notification menu end -->
+            </div>
+            <!-- //header-ends -->
+            <div id="page-wrapper">
+                <div class="graphs">
+                    <?php
+                    $id = $_GET['id'];
+                    $desa = $hsl['desa'];
+                    $sql = "SELECT * FROM desa join produksi on desa.desa=produksi.desa WHERE desa.id='$id'";
+                    $hasil2 = $koneksi->query($sql);
+                    while ($hsl2 = $hasil2->fetch_assoc()) {
+                        $desa = $hsl2['desa'];
+                        $latitude = $hsl2['latitude'];
+                        $longitude = $hsl2['longitude'];
+                        $irigasi = $hsl2['irigasi'];
+                        $tadah = $hsl2['tadah'];
+                        $luas = $hsl2['irigasi'] * 2 + $hsl['tadah'];
+                        $produksi = $hsl2['produksi'];
+                        $provitas = $hsl2['produksi'] / $luas;
+                    }
+                    // $id = $_GET['id'];
+                    // $sql2 = "SELECT * FROM produksi JOIN desa on desa.id=produksi.id";
+                    // $hasil2 = $koneksi2->query($sql2);
+                    // while ($hsl2 = $hasil2->fetch_assoc()) {
+                    //     $irigasi = $hsl2['irigasi'];
+                    //     $produksi = $hsl2['produksi'];
+                    // }
+                    // var_dump($provitas);
+                    // die;
+                    ?>
+                    <h1>Edit Data Desa</h1>
+                    <form action="#" method="post">
+                        <input type="hidden" name="id" value="<?php echo $id; ?>">
+                        <div class="form-group">
+                            <label>Nama Desa</label>
+                            <input type="text" required="" class="form-control" name="desa" value="<?php echo $desa; ?>">
+                        </div>
+                        <div class="form-group">
+                            <label>Latitude</label>
+                            <input type="number" required="" class="form-control" name="latitude" value="<?php echo $latitude; ?>">
+                        </div>
+                        <div class="form-group">
+                            <label>Longitude</label>
+                            <input type="number" required="" class="form-control" name="longitude" value="<?php echo $longitude; ?>">
+                        </div>
+                        <div class="form-group">
+                            <label>Irigasi</label>
+                            <input type="number" required="" class="form-control" name="irigasi" value="<?php echo $irigasi; ?>">
+                        </div>
+                        <div class="form-group">
+                            <label>Tadah Hujan</label>
+                            <input type="number" required="" class="form-control" name="tadah" value="<?php echo $tadah; ?>">
+                        </div>
+                        <div class="form-group">
+                            <label>Luas Panen [ha]</label>
+                            <input type="number" required="" class="form-control" name="luas" value="<?php echo $luas; ?>" readonly>
+                        </div>
+                        <div class="form-group ">
+                            <label>Produksi [ton]</label>
+                            <input type="number" required="" class="form-control" name="produksi" value="<?php echo $produksi; ?>">
+                        </div>
+                        <div class="form-group">
+                            <label>Provitas [ton/ha]</label>
+                            <input type="number" required="" class="form-control" name="provitas" value="<?php echo $provitas; ?>" readonly>
+                        </div>
+
+                        <button type="submit" name="submit" class="btn btn-primary error-w3l-btn mt-sm-5 mt-3 px-4" style="width: 100%">Update Data Desa</button>
+                    </form>
+                    <br /><br />
+
+                    <?php
+                    if (isset($_POST['submit'])) {
+                        // $id = $_POST['id'];
+                        $desa = $_POST['desa'];
+                        $latitude = $_POST['latitude'];
+                        $longitude = $_POST['longitude'];
+                        $irigasi = $_POST['irigasi'];
+                        $tadah = $_POST['tadah'];
+                        $produksi = $_POST['produksi'];
+                        // $temp = [
+                        //     $id,
+                        //     $desa,
+                        //     $latitude,
+                        //     $longitude,
+                        //     $irigasi,
+                        //     $tadah,
+                        //     $produksi
+                        // ];
+                        // var_dump($temp);
+                        // die;
+                        $sql = "UPDATE desa SET desa='$desa', latitude='$latitude', longitude='$longitude' WHERE id='$id'";
+                        $koneksi->query($sql);
+                        $sql2 = "UPDATE produksi SET desa='$desa', irigasi='$irigasi', tadah='$tadah', produksi='$produksi', WHERE id='$id'";
+                        $koneksi->query($sql2);
+                        $token = md5('edit');
+                        $url = 'Location: desa_daftar.php?token=' . $token;
+                        header($url);
+                    }
+                    ?>
+
+                </div>
+            </div>
+        </div>
+        <?php include 'footer.php'; ?>
+    </section>
+
+    <script src="js/jquery.nicescroll.js"></script>
+    <script src="js/scripts.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+</body>
+
+</html>
+
+<?php
+$token = $_GET['token'];
+if ($token == md5('edit')) {
+    echo '<script type="text/javascript">alert("<br />Data Desa berhasil di edit!<br />Terima Kasih.")</script>';
+}
+?>
