@@ -1,0 +1,118 @@
+<!DOCTYPE HTML>
+<html>
+<?php include 'head.php'; ?>
+
+<body class="sticky-header left-side-collapsed" onload="initMap()">
+    <section>
+        <?php include 'menu.php'; ?>
+
+        <!-- main content start-->
+        <div class="main-content">
+            <!-- header-starts -->
+            <div class="header-section">
+
+                <!--toggle button start-->
+                <a class="toggle-btn  menu-collapsed"><i class="fa fa-bars"></i></a>
+                <!--toggle button end-->
+
+                <!--notification menu start -->
+                <div class="menu-right">
+                    <div class="user-panel-top">
+                        <div class="profile_details_left">
+                        </div>
+                        <div class="profile_details">
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <!--notification menu end -->
+            </div>
+            <!-- //header-ends -->
+            <div id="page-wrapper">
+                <div class="graphs">
+
+                    <h1>Input Desa Baru</h1>
+                    <form action="#" method="post">
+                        <div class="form-group">
+                            <label>Tahun</label>
+                            <input type="number" required="" class="form-control" name="tahun">
+                        </div>
+                        <div class="form-group">
+                            <label>Nama Desa</label>
+                            <input type="text" required="" class="form-control" name="desa">
+                        </div>
+                        <div class="form-group">
+                            <label>Latitude</label>
+                            <input type="number" required="" class="form-control" name="latitude">
+                        </div>
+                        <div class="form-group">
+                            <label>Longitude</label>
+                            <input type="number" required="" class="form-control" name="longitude">
+                        </div>
+                        <div class="form-group">
+                            <label>Irigasi</label>
+                            <input type="number" required="" class="form-control" name="irigasi">
+                        </div>
+                        <div class="form-group">
+                            <label>Tadah Hujan</label>
+                            <input type="number" required="" class="form-control" name="tadah">
+                        </div>
+                        <div class="form-group ">
+                            <label>Produksi [ton]</label>
+                            <input type="number" required="" class="form-control" name="produksi">
+                        </div>
+
+                        <button type="submit" name="submit" class="btn btn-primary error-w3l-btn mt-sm-5 mt-3 px-4" style="width: 100%">Input Kelompok Baru</button>
+                    </form>
+                    <br /><br />
+
+                    <?php
+                    if (isset($_POST['submit'])) {
+                        $tahun = $_POST['tahun'];
+                        $desa = $_POST['desa'];
+                        $latitude = $_POST['latitude'];
+                        $longitude = $_POST['longitude'];
+                        $irigasi = $_POST['irigasi'];
+                        $tadah = $_POST['tadah'];
+                        $produksi = $_POST['produksi'];
+                        // $temp = [
+                        //     $tahun,
+                        //     $desa,
+                        //     $latitude,
+                        //     $longitude,
+                        //     $irigasi,
+                        //     $tadah,
+                        //     $produksi
+                        // ];
+                        // var_dump($temp);
+                        // die;
+                        $sql = "INSERT INTO desa (desa, latitude, longitude) VALUES ('$desa', '$latitude', '$longitude')";
+                        $koneksi->query($sql);
+                        $sql2 = "INSERT INTO produksi (desa, tahun, irigasi, tadah, produksi) VALUES ('$tahun', '$desa', '$irigasi', '$tadah', '$produksi')";
+                        $koneksi2->query($sql2);
+                        $token = md5('edit');
+                        $url = 'Location: desa_baru.php?token=' . $token;
+                        header($url);
+                    }
+                    ?>
+
+                </div>
+            </div>
+        </div>
+        <?php include 'footer.php'; ?>
+    </section>
+
+    <script src="js/jquery.nicescroll.js"></script>
+    <script src="js/scripts.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+</body>
+
+</html>
+
+<?php
+$token = $_GET['token'];
+if ($token == md5('baru')) {
+    echo '<script type="text/javascript">alert("<br />Desa Baru berhasil di input!<br />Terima Kasih.")</script>';
+}
+?>
